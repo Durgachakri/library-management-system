@@ -1,9 +1,7 @@
 const Book = require("../models/Book");
 const Borrow = require("../models/Borrow");
 
-// @desc    Add a new book
-// @route   POST /api/books
-// @access  Librarian only
+
 const addBook = async (req, res, next) => {
   try {
     const { title, author, isbn, category, quantity, availableQuantity } =
@@ -37,16 +35,13 @@ const addBook = async (req, res, next) => {
   }
 };
 
-// @desc    Get all books with search, filter, and pagination
-// @route   GET /api/books?search=&category=&page=1&limit=10
-// @access  Authenticated users (members & librarians)
+
 const getAllBooks = async (req, res, next) => {
   try {
     const { search, category, page = 1, limit = 10 } = req.query;
 
     const query = {};
 
-    // Search by title or author
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: "i" } },
@@ -84,9 +79,6 @@ const getAllBooks = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single book by ID
-// @route   GET /api/books/:id
-// @access  Authenticated users
 const getBookById = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -107,9 +99,6 @@ const getBookById = async (req, res, next) => {
   }
 };
 
-// @desc    Update a book
-// @route   PUT /api/books/:id
-// @access  Librarian only
 const updateBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -121,7 +110,6 @@ const updateBook = async (req, res, next) => {
       });
     }
 
-    // If updating quantity, ensure availableQuantity remains consistent
     const updatedData = { ...req.body };
 
     const newQuantity =
@@ -154,9 +142,6 @@ const updateBook = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a book
-// @route   DELETE /api/books/:id
-// @access  Librarian only
 const deleteBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -168,7 +153,6 @@ const deleteBook = async (req, res, next) => {
       });
     }
 
-    // Prevent deleting if book is currently borrowed
     const activeBorrow = await Borrow.findOne({
       bookId: req.params.id,
       status: "borrowed",
@@ -192,9 +176,6 @@ const deleteBook = async (req, res, next) => {
   }
 };
 
-// @desc    Borrow a book
-// @route   POST /api/books/:id/borrow
-// @access  Member only
 const borrowBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -206,7 +187,6 @@ const borrowBook = async (req, res, next) => {
       });
     }
 
-    // Check availability
     if (book.availableQuantity <= 0) {
       return res.status(400).json({
         success: false,
@@ -248,9 +228,6 @@ const borrowBook = async (req, res, next) => {
   }
 };
 
-// @desc    Return a borrowed book
-// @route   POST /api/books/:id/return
-// @access  Member only
 const returnBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);

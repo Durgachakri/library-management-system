@@ -9,8 +9,6 @@ const { protect } = require("../middleware/authMiddleware");
 const { librarianOnly, memberOnly } = require("../middleware/roleMiddleware");
 const { mongoIdValidation, validate } = require("../validators/validationRules");
 
-// GET /api/members/me/books — Member: see their borrowed books
-// NOTE: This must be defined BEFORE /:id routes to avoid "me" being parsed as an ID
 router.get("/me/books", protect, memberOnly, getMyBorrowedBooks);
 
 // GET /api/members — Librarian only

@@ -1,10 +1,7 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-// @desc    Register a new member
-// @route   POST /api/auth/register
-// @access  Public
 const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -21,7 +18,6 @@ const register = async (req, res, next) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (always as member — librarians are added directly to DB)
     const user = await User.create({
       name,
       email,
@@ -44,9 +40,6 @@ const register = async (req, res, next) => {
   }
 };
 
-// @desc    Login user and return JWT token
-// @route   POST /api/auth/login
-// @access  Public
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;

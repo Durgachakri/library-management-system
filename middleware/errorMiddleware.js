@@ -2,7 +2,6 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || "Internal Server Error";
 
-  // Mongoose duplicate key error (e.g., duplicate email or ISBN)
   if (err.code === 11000) {
     statusCode = 409;
     const field = Object.keys(err.keyValue)[0];
@@ -17,7 +16,6 @@ const errorHandler = (err, req, res, next) => {
       .join(", ");
   }
 
-  // Mongoose invalid ObjectId
   if (err.name === "CastError") {
     statusCode = 400;
     message = `Invalid ID format.`;

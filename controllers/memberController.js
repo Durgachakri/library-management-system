@@ -1,9 +1,6 @@
 const User = require("../models/User");
 const Borrow = require("../models/Borrow");
 
-// @desc    Get all members
-// @route   GET /api/members
-// @access  Librarian only
 const getAllMembers = async (req, res, next) => {
   try {
     const members = await User.find({ role: "member" })
@@ -20,9 +17,6 @@ const getAllMembers = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a member
-// @route   DELETE /api/members/:id
-// @access  Librarian only
 const deleteMember = async (req, res, next) => {
   try {
     const member = await User.findById(req.params.id);
@@ -41,7 +35,6 @@ const deleteMember = async (req, res, next) => {
       });
     }
 
-    // Prevent deleting member with active borrows
     const activeBorrows = await Borrow.findOne({
       memberId: req.params.id,
       status: "borrowed",
@@ -65,9 +58,6 @@ const deleteMember = async (req, res, next) => {
   }
 };
 
-// @desc    Get books borrowed by the logged-in member
-// @route   GET /api/members/me/books
-// @access  Member only
 const getMyBorrowedBooks = async (req, res, next) => {
   try {
     const borrowedBooks = await Borrow.find({
